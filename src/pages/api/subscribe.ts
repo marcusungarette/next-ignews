@@ -8,6 +8,9 @@ type User = {
   ref: {
     id: string
   }
+  data: {
+    stripe_customer_id: string
+  }
 }
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
@@ -23,22 +26,31 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       )
     )
 
-    const stripeCustomer = await stripe.customers.create({
-      email: session.user.email,
-      //metadata
-    })
+    let customerId = user.data.stripe_customer_id
 
-    await fauna.query(
-      q.Update(
-        q.Ref(q.Collection('users'), user.ref.id),
-        { data: {
-          stripe_customer_id: stripeCustomer.id
-        }}
+    if(!customerId){
+      const stripeCustomer = await stripe.customers.create({
+        email: session.user.email,
+        //metadata
+      })
+
+      await fauna.query(
+        q.Update(
+          q.Ref(q.Collection('users'), user.ref.id),
+          { data: {
+            stripe_customer_id: stripeCustomer.id
+          }}
+        )
       )
-    )
+
+      customerId = stripeCustomer.id
+    }
+
+   
+
 
     const stripeCheckoutSession = await stripe.checkout.sessions.create({
-      customer: stripeCustomer.id,
+      customer: customerId,
       payment_method_types: ['card'],
       billing_address_collection: 'required',
       line_items: [
