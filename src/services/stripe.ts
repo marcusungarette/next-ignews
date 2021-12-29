@@ -1,3 +1,5 @@
+// Stripe SDK/library to deal with BACKEND
+
 import Stripe from 'stripe'
 import { version, name } from '../../package.json'
 
