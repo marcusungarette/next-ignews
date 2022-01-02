@@ -47,7 +47,7 @@ export async function saveSubscription(
             )
           )
         ),
-        { data: subscriptionData}
+        { data: subscriptionData }
       )
     )
   }
