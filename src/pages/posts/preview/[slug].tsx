@@ -4,6 +4,9 @@ import Head from 'next/head'
 import PrismicDom from 'prismic-dom'
 import { getPrismicClient } from '../../../services/prismic';
 import styles from '../post.module.scss'
+import { useSession } from 'next-auth/react';
+import { useEffect } from 'react';
+import router from 'next/router';
 
 interface PostsPreviewProps {
   post: {
@@ -13,8 +16,15 @@ interface PostsPreviewProps {
     updatedAt: string;
   }
 }
-
 export default function PostPreview({ post }: PostsPreviewProps) {
+  const { data: session } = useSession()
+
+  useEffect(() => {
+    if (session?.activeSubscription) {
+      router.push(`/posts/${post.slug}`)
+    }
+  }, [ session ])
+  
   return (
     <>
     <Head>
