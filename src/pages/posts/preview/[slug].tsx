@@ -1,4 +1,5 @@
 import { GetStaticProps } from 'next';
+import Link from 'next/link'
 import Head from 'next/head'
 import PrismicDom from 'prismic-dom'
 import { getPrismicClient } from '../../../services/prismic';
@@ -28,6 +29,13 @@ export default function PostPreview({ post }: PostsPreviewProps) {
         dangerouslySetInnerHTML={{ __html: post.content }}
         className={`${styles.postContent} ${styles.previewContent}`}
         />
+
+        <div className={styles.continueReading}>
+          Wanna continue reading?
+          <Link href="/">
+            <a href=""> Subscribe now 🤗</a>
+          </Link>
+        </div>
       </article>
     </main>
     </>
